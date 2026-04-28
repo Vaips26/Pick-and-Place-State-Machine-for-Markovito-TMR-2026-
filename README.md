@@ -114,6 +114,12 @@ Videos and experimental results available in this repository (add links or media
 
 You can include:
 
+## Trash Disposal Demo
+
+![Trash Demo](images/trash_demo1.gif)
+
+![Trash Demo](images/trash_demo1.mp4)
+
 - Competition runs
 - Object sorting demos
 - Trash disposal
