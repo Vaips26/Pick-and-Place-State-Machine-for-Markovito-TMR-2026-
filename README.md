@@ -114,15 +114,11 @@ Videos and experimental results available in this repository (add links or media
 
 You can include:
 
+
 ## Trash Disposal Demo
 
-<h2>Trash Disposal Demo</h2>
+[Watch Trash Demo](images/trash_demo1.mp4)
 
-<video width="700" controls>
-  <source src="images/trash_demo1.mp4" type="video/mp4">
-</video>
-
-![Trash Demo](images/trash_demo1.mp4)
 
 - Competition runs
 - Object sorting demos
