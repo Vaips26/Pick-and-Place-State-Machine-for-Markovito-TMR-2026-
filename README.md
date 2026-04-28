@@ -116,7 +116,11 @@ You can include:
 
 ## Trash Disposal Demo
 
-![Trash Demo](images/trash_demo1.gif)
+<h2>Trash Disposal Demo</h2>
+
+<video width="700" controls>
+  <source src="images/trash_demo1.mp4" type="video/mp4">
+</video>
 
 ![Trash Demo](images/trash_demo1.mp4)
 
