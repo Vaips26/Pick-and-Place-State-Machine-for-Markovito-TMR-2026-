@@ -116,7 +116,8 @@ You can include:
 
 
 ## Trash Disposal Demo
-
+## Quick Demo
+![Demo](images/trash.gif)
 [Watch Trash Demo](images/trash_demo1.mp4)
 
 
