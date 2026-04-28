@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!-- This file can be launched in ROS melodic and later -->
+<launch>
+	<group ns="pick_and_place">
+
+		<!-- Task configurable parameters -->
+		<param name="debug" value="false" type="bool"/>
+
+        <!-- Objects related variables. This three lists must have the same length -->
+		<param name="known_objects_classes"    value="cereal:apple:chips:banana:clip:cup:knife:lemon:milk:mustard:plate:screwdriver:orange:softball:soup:spam:sponge:spoon:tuna:wrench:pear:tennis:tomatoe:wood:rubik:baseball:bowl" type='string'/> <!-- Classes of known objects-->
+		<param name="known_objects_categories" value="food:fruit:food:fruit:tool:kitchen:kitchen:fruit:food:food:kitchen:tool:fruit:ball:food:food:tool:kitchen:food:tool:fruit:ball:fruit:tool:tool:ball:kitchen" type='string'/> <!-- Categories of known objects-->
+		<param name="grasp_probabilities" value="200:199:150:10:10:10:10:30:150:50:10:10:198:20:20:20:10:10:20:10:160:195:194:180:150:190:120" type='string'/> <!-- Probability for successfully grasp the corresponding object. The value must be between 1 (low) and 10 (high)-->
+        <param name="detection_probabilities" value="1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1" type='string'/> <!-- Probability for successfully detection of the corresponding object. The value must be between 1 (low) and 10 (high)-->
+        <param name="not_graspable_objects" value="wrench:spoon:sponge:softball:screwdriver:plate:knife:clip:banana" type='string'/> <!-- Classes of not graspable objects, fill if necessary-->
+        
+        <param name="objects_to_be_detected" value="wood block:rubik:tenis ball:mug:spoon:apple:cereal:milk" type='string'/> <!-- All objects to try must be here, from easier to harder-->
+        <param name="objects_to_be_detected_cathegory" value="trash:trash:trash:dish:dish:food:food:food" type='string'/> <!--Above objects cathegories. Must have the same lengths-->
+        <param name="trash_can_name" value="trash can" type='string'/>
+        <param name="dishwasher_name" value="gray drawer" type='string'/>
+
+
+		<!-- Navigation wait-points names -->
+		<param name="start_point" value="start_position" type="str"/> <!-- Point in the dining room to safely to take out the arm-->
+		<param name="table_point" value="dining_table" type="str"/> <!-- Point in the dining room to inspect the table-->
+		<param name="shelf_inspection_point" value="cabinet_inspection" type="str"/> <!-- Point in the kitchen to inspect the shelf-->
+		<param name="shelf_deliver_point" value="cabinet_delivery" type="str"/> <!-- Point in the kitchen to place the object-->
+		<param name="move_back_distance" value="-0.2" type="double"/> <!-- Distance to move_back in meters-->
+		<param name="move_back_distance_2" value="-0.5" type="double"/> <!-- Distance to move_back_2 in meters-->
+        <param name="move_back_distance_trascan" value="0.1" type="double"/>
+        
+        <!-- Torso and Head parameters for Object detection in Table -->
+        <param name="torso_height_table" value="1.0" type="double"/> <!-- Torso height for Object detection-->
+        <param name="head_pan_table" value="0.0" type="double"/>     <!-- Head pan for Object detection-->
+        <param name="head_tilt_table" value="0.65" type="double"/>    <!-- Head tilt for Object detection-->
+
+         <!-- Torso and Head parameters for shelf inspection -->
+        <param name="torso_height_shelf_inspection" value="0.0" type="double"/>   <!-- Torso height for navigation-->
+        <param name="head_pan_shelf_inspection" value="0.0" type="double"/>       <!-- Head pan for navigation-->
+        <param name="head_tilt_shelf_inspection" value="0.244" type="double"/>      <!-- Head tilt for navigation-->
+
+         <!-- Torso and Head parameters for place the object in Shelf, level 1 (the highest) -->
+        <param name="torso_height_level_1" value="1.0" type="double"/> <!-- Torso height for place objects in Shelf-->
+        <param name="head_pan_level_1" value="0.0" type="double"/>     <!-- Head pan for place objects in Shelf-->
+        <param name="head_tilt_level_1" value="0.6" type="double"/>    <!-- Head tilt for place objects in Shelf-->
+
+        <!-- Torso and Head parameters for place the object in Shelf, level 2 (the middle) -->
+        <param name="torso_height_level_2" value="0.0" type="double"/> <!-- Torso height for place objects in Shelf-->
+        <param name="head_pan_level_2" value="0.0" type="double"/>     <!-- Head pan for place objects in Shelf-->
+        <param name="head_tilt_level_2" value="0.0" type="double"/>    <!-- Head tilt for place objects in Shelf-->
+
+        <!-- Torso and Head parameters for place the object in Shelf, level 3 (the lowest) -->
+        <param name="torso_height_level_3" value="0.1" type="double"/> <!-- Torso height for place objects in Shelf-->
+        <param name="head_pan_level_3" value="0.0" type="double"/>     <!-- Head pan for place objects in Shelf-->
+        <param name="head_tilt_level_3" value="0.0" type="double"/>    <!-- Head tilt for place objects in Shelf-->
+
+        <!-- Torso and Head parameters for navigation -->
+        <param name="torso_height_nav" value="0.1" type="double"/>   <!-- Torso height for navigation-->
+        <param name="head_pan_nav" value="0.0" type="double"/>       <!-- Head pan for navigation-->
+        <param name="head_tilt_nav" value="0.0" type="double"/>      <!-- Head tilt for navigation-->
+
+        <!-- Arm related parameters -->
+        <param name="home_pose" value="home_initial" type="str"/>       <!-- Home pose for the arm-->
+        <param name="home_normal_pose" value="home_normal" type="str"/>       <!-- Home normal pose for the arm-->
+
+        <param name="out_pose" value="home_out" type="str"/>    <!-- Out pose for the arm-->
+        <param name="level_1_pose" value="level_1_c" type="str"/> <!-- Level 1 pose for the arm, the options are c,l,r-->
+        <param name="level_2_pose" value="level_2_c" type="str"/> <!-- Level 2 pose for the arm, the options are c,l,r-->
+        <param name="level_3_pose" value="level_3_c" type="str"/> <!-- Level 3 pose for the arm, the options are c,l,r-->
+        <param name="shelf_release_pose" value="release_table" type="str"/> <!-- Pose for release the object-->
+        
+        <param name="arm_out_time_out" value="5" type="int"/> <!-- Max time in seconds for motion planing to take out the arm in seconds-->
+
+        <!-- Shelf levels delimiters in Pixels in the image taken from the shelf inspection point -->
+        <param name="y1" value="75" type="int"/>  <!-- Level 1 (highest) delimiter in Pixels -->
+        <param name="y2" value="165" type="int"/> <!-- Level 2 (middle) delimiter in Pixels -->
+        <param name="y3" value="250" type="int"/> <!-- Level 3 (lowest) delimiter in Pixels -->
+        <!-- Shelf width delimiters in Pixels in the image taken from the shelf inspection point -->
+        <param name="x_left" value="180" type="int"/> <!-- The shelf x_left delimiter -->
+        <param name="x_right" value="360" type="int"/> <!-- The shelf x_right delimiter -->
+        <!-- Shelf x delimiters for place the objects in left, center or right in Pixels in the image taken from the shelf inspection point -->
+        <param name="x_delimiters" value="0:100:150:200" type='string'/> <!-- The right space goes from the first delimiter to the second, the center from the second to the third and the left from the third to the fourth-->
+
+        <!-- Shelf levels default categories. Adjust manually if detection in shelf fails -->
+        <param name="level_1_category" value="ball" type="str"/>
+        <param name="level_2_category" value="fruit" type="str"/>
+        <param name="level_3_category" value="kitchen" type="str"/>
+        <param name="manual_categorization" value="true" type="bool"/> <!-- Put in true to use manual shelf categorization -->
+
+        <!-- Offset sumado al centroide del bote antes de mandar el grasp -->
+        <param name="trash_offset_x" value="0.0"  type="double"/> <!-- avanzar(+) / retroceder(-) sobre el bote-->
+        <param name="trash_offset_y" value="0.0"  type="double"/> <!-- desplazamiento lateral-->
+        <param name="trash_offset_z" value="0.1"  type="double"/> <!-- altura sobre el centro del bote-->
+
+        <!-- Nodes -->
+        <node pkg="task_masters" name="pick_and_place_coordinator" type="pick_and_place.py" output="screen" respawn="false"/>
+	</group>
+</launch>
